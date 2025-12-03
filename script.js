@@ -1,4 +1,4 @@
-// Violet Rhodes Frontend - Per-user Memory + Voice Messages
+// Violet Rhodes Frontend - OnlyFans-style: Media ONLY on Request
 const BACKEND_URL = "https://violet-rhodes-backend.onrender.com";
 
 // Initialize userId for per-user memory
@@ -73,7 +73,7 @@ function addMessage(sender, text) {
   return div;
 }
 
-// Add media (image/video) to a message
+// Add media (image/video) to a message - ONLY if provided
 function addMediaToMessage(container, media) {
   if (!media || !media.type || !media.src) return;
 
@@ -119,7 +119,8 @@ function playVioletVoice(text) {
 }
 
 // Type out effect for human-like messaging
-function typeOutMessage(sender, fullText, media) {
+// ONLY shows voice button if audio is provided by backend
+function typeOutMessage(sender, fullText, media, audio) {
   const bubble = document.createElement("div");
   bubble.className = `message ${sender}`;
   messagesEl.appendChild(bubble);
@@ -129,8 +130,8 @@ function typeOutMessage(sender, fullText, media) {
   textSpan.className = "msg-text";
   bubble.appendChild(textSpan);
 
-  // Add voice button for Violet messages
-  if (sender === "violet") {
+  // OnlyFans-style: ONLY add voice button if backend provides audio
+  if (sender === "violet" && audio) {
     const voiceBtn = document.createElement("button");
     voiceBtn.textContent = "🎧";
     voiceBtn.className = "voice-btn";
@@ -145,6 +146,7 @@ function typeOutMessage(sender, fullText, media) {
 
   function typeNext() {
     if (i >= fullText.length) {
+      // After typing finishes, attach media if provided
       if (media) addMediaToMessage(bubble, media);
       return;
     }
@@ -191,8 +193,10 @@ async function sendMessage() {
     hideTyping();
 
     const replyText = data.reply || "mm... something glitched babe...";
-    const media = data.media || null;
-    typeOutMessage("violet", replyText, media);
+    const media = data.media || null;  // Only use if backend provides it
+    const audio = data.audio || null;  // Only use if backend provides it
+    
+    typeOutMessage("violet", replyText, media, audio);
 
     conversation.push({ role: "assistant", content: replyText });
 

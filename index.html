@@ -1,225 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Violet Rhodes Chat</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #1a1a2e; color: #fff; }
-    
-    /* Chat bubble */
-    #violet-chat-bubble { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: linear-gradient(135deg,#c471f5,#f7797d); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-    #violet-chat-bubble:hover { transform: scale(1.05); }
-    
-    /* Chat window */
-    #violet-chat-window { position: fixed; bottom: 90px; right: 20px; width: 380px; max-height: 500px; background: #0f0f1c; border-radius: 12px; box-shadow: 0 5px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; overflow: hidden; }
-    #violet-chat-window.hidden { display: none; }
-    
-    /* Header */
-    .violet-header { background: linear-gradient(135deg,#c471f5,#f7797d); padding: 16px; display: flex; justify-content: space-between; align-items: center; }
-    .violet-header span { font-weight: 600; font-size: 18px; }
-    #violet-close-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
-    
-    /* Messages */
-    #violet-messages { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-    .violet-message { padding: 10px 12px; border-radius: 10px; max-width: 85%; word-wrap: break-word; }
-    .violet-message.user { background: linear-gradient(135deg,#667eea,#764ba2); align-self: flex-end; margin-left: 30px; }
-    .violet-message.violet { background: #30304a; align-self: flex-start; margin-right: 30px; }
-    
-    /* Voice message bubble */
-    .voice-msg { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: #30304a; border-radius: 10px; max-width: 85%; }
-    .voice-msg.user { background: linear-gradient(135deg,#667eea,#764ba2); align-self: flex-end; margin-left: 30px; }
-    .voice-play-btn { background: none; border: none; color: #fff; cursor: pointer; font-size: 16px; padding: 4px 8px; }
-    .voice-play-btn:hover { opacity: 0.8; }
-    .voice-duration { font-size: 12px; opacity: 0.7; min-width: 30px; }
-    
-    /* Input area */
-    .violet-input-area { display: flex; padding: 12px; background: #0f0f1c; gap: 8px; border-top: 1px solid #222; }
-    #violet-input { flex: 1; padding: 10px 14px; background: #222234; color: #fff; border-radius: 999px; border: none; outline: none; font-size: 14px; }
-    #violet-input::placeholder { color: #888; }
-    #violet-send, #violet-mic { border: none; border-radius: 999px; padding: 10px 14px; cursor: pointer; font-size: 16px; transition: all 0.2s; }
-    #violet-send { background: linear-gradient(135deg,#c471f5,#f7797d); color: #fff; font-weight: 600; }
-    #violet-send:hover { transform: scale(1.05); }
-    #violet-mic { background: #30304a; color: #fff; }
-    #violet-mic.recording { background: #e74c3c; animation: pulse 0.5s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-  </style>
+  <title>Violet Rhodes – AI Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Chat bubble -->
-  <div id="violet-chat-bubble">👤</div>
-  
-  <!-- Chat window -->
-  <div id="violet-chat-window" class="hidden">
-    <div class="violet-header">
-      <span>Violet Rhodes</span>
-      <button id="violet-close-btn">×</button>
-    </div>
-    <div id="violet-messages"></div>
-    <div class="violet-input-area">
-      <input id="violet-input" placeholder="talk to me babe…" />
-      <button id="violet-mic" title="Hold to talk">🎤</button>
-      <button id="violet-send">Send</button>
-    </div>
+  <div class="page">
+    <!-- LEFT: branding / info -->
+    <section class="left-panel">
+      <div class="logo">Violet<span>Rhodes</span></div>
+      <h1>soft, teasing AI companion</h1>
+      <p class="subtitle">
+        violet chats, flirts (safely 😉), remembers your vibe, 
+        and feels more like a girl texting you than a robot.
+      </p>
+
+      <div class="pill-grid">
+        <div class="pill">💜 flirty but safe</div>
+        <div class="pill">🎧 voice-ready frontend</div>
+        <div class="pill">🖼 photo & video replies</div>
+        <div class="pill">⚡ human-like typing</div>
+      </div>
+
+      <div class="info-card">
+        <h2>how it works</h2>
+        <p>type anything on the right. violet will "think" for a moment, then type back slowly, like a real 19-year-old texting you.</p>
+        <p>if your backend sends media, she can drop photos & short clips directly in the chat – no links.</p>
+      </div>
+    </section>
+
+    <!-- RIGHT: chat -->
+    <section class="right-panel">
+      <div class="chat-wrapper">
+        <header class="chat-header">
+          <div class="avatar"></div>
+          <div>
+            <div class="chat-title">Violet Rhodes</div>
+            <div class="chat-status" id="chat-status">online ●</div>
+          </div>
+        </header>
+
+        <div id="messages" class="messages"></div>
+
+        <div id="typing-indicator" class="typing hidden">
+          <span></span><span></span><span></span>
+        </div>
+
+        <div class="input-row">
+          <input
+            id="chat-input"
+            type="text"
+            placeholder="talk to me, babe…"
+            autocomplete="off"
+          />
+          <button id="send-btn">Send</button>
+        </div>
+      </div>
+    </section>
   </div>
-  
-  <!-- Hidden audio player for voice notes -->
-  <audio id="violet-audio-player"></audio>
-  
-  <script>
-    const BACKEND_URL = "https://violet-rhodes-backend.onrender.com";
-    
-    const bubble = document.getElementById("violet-chat-bubble");
-    const box = document.getElementById("violet-chat-window");
-    const closeBtn = document.getElementById("violet-close-btn");
-    const messages = document.getElementById("violet-messages");
-    const input = document.getElementById("violet-input");
-    const sendBtn = document.getElementById("violet-send");
-    const micBtn = document.getElementById("violet-mic");
-    
-    let conversation = [];
-    let recognition = null;
-    let recognizing = false;
-    
-    // Open/close chat
-    bubble.onclick = () => box.classList.remove("hidden");
-    closeBtn.onclick = () => box.classList.add("hidden");
-    
-    // Send message
-    sendBtn.onclick = sendMessage;
-    input.addEventListener("keydown", e => {
-      if (e.key === "Enter") sendMessage();
-    });
-    
-    // Add text message
-    function addTextMessage(sender, text) {
-      const div = document.createElement("div");
-      div.className = `violet-message ${sender}`;
-      div.textContent = text;
-      messages.appendChild(div);
-      messages.scrollTop = messages.scrollHeight;
-    }
-    
-    // Add voice message (WhatsApp-style)
-    function addVoiceMessage(sender, audioPath) {
-      if (!audioPath) return;
-      
-      const wrapper = document.createElement("div");
-      wrapper.className = `violet-message voice-msg ${sender}`;
-      
-      const playBtn = document.createElement("button");
-      playBtn.className = "voice-play-btn";
-      playBtn.textContent = "▶ Voice";
-      
-      const durationSpan = document.createElement("span");
-      durationSpan.className = "voice-duration";
-      durationSpan.textContent = "...";
-      
-      const audio = document.createElement("audio");
-      audio.src = BACKEND_URL + audioPath;
-      audio.preload = "metadata";
-      
-      audio.addEventListener("loadedmetadata", () => {
-        const secs = Math.round(audio.duration);
-        durationSpan.textContent = secs + "s";
-      });
-      
-      playBtn.onclick = () => audio.play();
-      
-      wrapper.appendChild(playBtn);
-      wrapper.appendChild(durationSpan);
-      wrapper.appendChild(audio);
-      messages.appendChild(wrapper);
-      messages.scrollTop = messages.scrollHeight;
-    }
-    
-    // Send message to backend
-    async function sendMessage() {
-      const text = input.value.trim();
-      if (!text) return;
-      
-      addTextMessage("user", text);
-      conversation.push({ role: "user", content: text });
-      input.value = "";
-      
-      const typing = document.createElement("div");
-      typing.className = "violet-message violet";
-      typing.textContent = "typing…";
-      messages.appendChild(typing);
-      messages.scrollTop = messages.scrollHeight;
-      
-      try {
-        const res = await fetch(BACKEND_URL + "/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: conversation })
-        });
-        
-        const data = await res.json();
-        typing.remove();
-        
-        addTextMessage("violet", data.reply);
-        conversation.push({ role: "assistant", content: data.reply });
-        
-        if (data.audio) {
-          addVoiceMessage("violet", data.audio);
-        }
-      } catch (err) {
-        console.error(err);
-        typing.remove();
-        addTextMessage("violet", "ugh, my connection glitched… try again, babe.");
-      }
-    }
-    
-    // Setup speech recognition
-    function setupRecognition() {
-      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SR) {
-        alert("Voice input not supported. Use Chrome or Edge.");
-        return null;
-      }
-      
-      const rec = new SR();
-      rec.lang = "en-US";
-      rec.interimResults = false;
-      rec.maxAlternatives = 1;
-      
-      rec.onstart = () => {
-        recognizing = true;
-        micBtn.classList.add("recording");
-      };
-      
-      rec.onerror = () => {
-        recognizing = false;
-        micBtn.classList.remove("recording");
-      };
-      
-      rec.onend = () => {
-        recognizing = false;
-        micBtn.classList.remove("recording");
-      };
-      
-      rec.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        input.value = transcript;
-      };
-      
-      return rec;
-    }
-    
-    // Mic button
-    micBtn.addEventListener("click", () => {
-      if (!recognition) {
-        recognition = setupRecognition();
-        if (!recognition) return;
-      }
-      
-      if (recognizing) {
-        recognition.stop();
-      } else {
-        recognition.start();
-      }
-    });
-  </script>
+
+  <script src="script.js"></script>
 </body>
 </html>
